@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import OpenAI from 'openai';
+import OpenAI from 'openai-api';
+import { OPENAI_API_KEY } from '../../config';
+
+
+
 
 @Component({
   selector: 'app-root',
@@ -10,24 +14,31 @@ export class AppComponent {
   title = 'smart-learner-prototype';
   userMessage!: string;
   assistantReply!: string;
+  test!: string;
   chatMessages: { role: string, content: string }[] = [];
+  private openai = new OpenAI(OPENAI_API_KEY);// this is a not best practice, secret keys should always be stored in server side
+
+  
   
   
 
   public async sendMessage() {
-    const openai = new OpenAI({
-      apiKey: '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',
-      dangerouslyAllowBrowser: true
-    });
       const userMessage = this.userMessage;
       this.chatMessages.push({role: 'user', content: userMessage});
-      const chatCompletion = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: 'Say this is a test' }],
-        model: 'gpt-3.5-turbo',
-      });
+      const response  = await this.generateResponse(userMessage);
+    console.log('key', this.openai);
+      console.log(response.data);
+      // const reply = chatCompletion.choices[0].toString();
+      this.chatMessages.push({role: 'assistant', content: String(response.data.choices[0].text) })
     
-      const reply = chatCompletion.choices[0].toString();
-      this.chatMessages.push({role: 'assistant', content: reply})
-    
+  }
+
+  public async generateResponse(message : string) {
+    return   await this.openai.complete({
+      engine: 'text-davinci-003',
+      prompt: message,
+      maxTokens: 256,
+  });
+
   }
 }
