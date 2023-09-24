@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ChatBoxComponent } from './chat/chat-box/chat-box.component';
+import { ChatModule } from './chat/chat.module';
 
 @NgModule({
   declarations: [
@@ -14,8 +16,7 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
-    CommonModule
+    ChatModule
   ],
   providers: [],
   bootstrap: [AppComponent]
